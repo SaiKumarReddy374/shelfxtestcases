@@ -11,9 +11,9 @@
     "start": "node server.js",
     "docs": "node server.js",
     "test": "npm run test:backend && npm run test:frontend",
-    "test:backend": "cd backend && jest --config=jest.config.cjs",
+    "test:backend": "jest --config=backend/jest.config.cjs",
     "test:frontend": "react-scripts test --watchAll=false",
-    "test:watch": "jest --watch --config=jest.config.cjs"
+    "test:watch": "jest --watch --config=backend/jest.config.cjs"
   },
   "dependencies": {
     "@emotion/react": "^11.13.3",
