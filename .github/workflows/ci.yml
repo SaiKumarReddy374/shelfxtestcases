@@ -41,6 +41,15 @@ jobs:
           cd backend
           npm audit || true
 
+      # Frontend Setup and Tests
+      - name: Install frontend dependencies
+        run: |
+          npm install
+
+      - name: Run frontend tests
+        run: |
+          npm test
+
       # Optional: Build Frontend
       - name: Build frontend
         run: |
