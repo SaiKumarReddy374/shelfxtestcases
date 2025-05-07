@@ -1,61 +1,68 @@
-import { adminStatus } from "../controllers/adminController.js";
+// Set test environment
+process.env.NODE_ENV = 'test';
+
+import { adminStatus } from "../controllers/adminController.js"; // Update the path if needed
 import db from "../db.js";
 
-jest.mock("../db.js"); // Mock the database module
+jest.mock("../db.js");
 
 describe("adminStatus", () => {
-    let req, res;
+  let mockReq, mockRes;
 
-    beforeEach(() => {
-        req = {
-            body: {
-                username: "admin",
-                password: "password123",
-            },
-        };
-        res = {
-            status: jest.fn().mockReturnThis(),
-            send: jest.fn(),
-        };
-    });
+  beforeEach(() => {
+    mockReq = {
+      body: {
+        username: "adminUser",
+        password: "adminPass"
+      }
+    };
 
-    it("should return 200 and a success message for valid credentials", async () => {
-        // Mock database query result
-        db.query.mockResolvedValueOnce([[{ username: "admin", password: "password123" }]]);
+    mockRes = {
+      status: jest.fn().mockReturnThis(),
+      send: jest.fn()
+    };
+  });
 
-        await adminStatus(req, res);
+  it("should login successfully with valid credentials", async () => {
+    const mockAdmin = [{ id: 1, username: "adminUser", password: "adminPass" }];
 
-        expect(res.status).toHaveBeenCalledWith(200);
-        expect(res.send).toHaveBeenCalledWith({ message: "Login successful" });
-    });
+    db.query.mockResolvedValueOnce([mockAdmin]);
 
-    it("should return 401 for invalid credentials", async () => {
-        // Mock database query result
-        db.query.mockResolvedValueOnce([[{ username: "admin", password: "wrongpassword" }]]);
+    await adminStatus(mockReq, mockRes);
 
-        await adminStatus(req, res);
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.send).toHaveBeenCalledWith({ message: "Login successful" });
+  });
 
-        expect(res.status).toHaveBeenCalledWith(401);
-        expect(res.send).toHaveBeenCalledWith({ message: "Invalid credentials" });
-    });
+  it("should return 401 for invalid password", async () => {
+    const mockAdmin = [{ id: 1, username: "adminUser", password: "adminPass" }];
 
-    it("should return 401 if the user is not found", async () => {
-        // Mock database query result
-        db.query.mockResolvedValueOnce([[]]); // No user found
+    db.query.mockResolvedValueOnce([mockAdmin]);
 
-        await adminStatus(req, res);
+    mockReq.body.password = "wrongPass"; // Simulate an invalid password
 
-        expect(res.status).toHaveBeenCalledWith(401);
-        expect(res.send).toHaveBeenCalledWith({ message: "Invalid credentials" });
-    });
+    await adminStatus(mockReq, mockRes);
 
-    it("should return 500 for a server error", async () => {
-        // Mock database query to throw an error
-        db.query.mockRejectedValueOnce(new Error("Database error"));
+    expect(mockRes.status).toHaveBeenCalledWith(401);
+    expect(mockRes.send).toHaveBeenCalledWith({ message: "Invalid credentials" });
+  });
 
-        await adminStatus(req, res);
+  it("should return 401 for non-existent user", async () => {
+    db.query.mockResolvedValueOnce([[]]); // No admin found
 
-        expect(res.status).toHaveBeenCalledWith(500);
-        expect(res.send).toHaveBeenCalledWith({ message: "Server error" });
-    });
+    await adminStatus(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(401);
+    expect(mockRes.send).toHaveBeenCalledWith({ message: "Invalid credentials" });
+  });
+
+  it("should handle server errors", async () => {
+    const error = new Error("Database error");
+    db.query.mockRejectedValueOnce(error);
+
+    await adminStatus(mockReq, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.send).toHaveBeenCalledWith({ message: "Server error" });
+  });
 });
