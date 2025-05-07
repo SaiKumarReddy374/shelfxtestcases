@@ -35,11 +35,11 @@ jobs:
       #     cd backend
       #     npm test
 
-      # Frontend Setup and Tests
-      - name: Install frontend dependencies
-        run: |
-          cd frontend
-          npm install
+      # # Frontend Setup and Tests
+      # - name: Install frontend dependencies
+      #   run: |
+      #     cd frontend
+      #     npm install
 
       # - name: Run frontend tests
       #   run: |
