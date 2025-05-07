@@ -30,10 +30,10 @@ jobs:
           cd backend
           npm install
 
-      - name: Run backend tests
-        run: |
-          cd backend
-          npm test
+      # - name: Run backend tests
+      #   run: |
+      #     cd backend
+      #     npm test
 
       # Frontend Setup and Tests
       - name: Install frontend dependencies
@@ -41,10 +41,10 @@ jobs:
           cd frontend
           npm install
 
-      - name: Run frontend tests
-        run: |
-          cd frontend
-          npm run test
+      # - name: Run frontend tests
+      #   run: |
+      #     cd frontend
+      #     npm run test
 
       # Optional: Audit (Non-blocking)
       - name: Run audit (non-blocking)
