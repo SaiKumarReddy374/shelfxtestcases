@@ -1,13 +1,15 @@
+name: ShelfX CI Pipeline
+
 on:
   push:
     branches:
-      - dev
+      - main
   pull_request:
     branches:
-      - dev
+      - main
 
 jobs:
-  build:
+  build-and-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,17 +24,37 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Clean and install dependencies
+      # Backend Setup and Tests
+      - name: Install backend dependencies
         run: |
-          rm -rf node_modules package-lock.json
+          cd backend
           npm install
 
+      # - name: Run backend tests
+      #   run: |
+      #     cd backend
+      #     npm test
+
+      # # Frontend Setup and Tests
+      # - name: Install frontend dependencies
+      #   run: |
+      #     cd frontend
+      #     npm install
+
+      # - name: Run frontend tests
+      #   run: |
+      #     cd frontend
+      #     npm run test
+
+      # Optional: Audit (Non-blocking)
       - name: Run audit (non-blocking)
         run: npm audit || true
 
+      # Optional: Build Frontend
       - name: Build frontend
-        run: npm run build
+        run:  npm run build
 
+      # Optional: Deploy (replace with your actual command)
       - name: Deploy to production
         run: |
           echo "✅ Build successful. Deploy step goes here."
