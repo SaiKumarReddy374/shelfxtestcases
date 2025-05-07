@@ -10,8 +10,8 @@
   "preview": "vite preview",
   "start": "node server.js",
   "docs": "node server.js",
-  "test": "jest citests/**/*.test.js",
-  "test:watch": "jest --watch citests/**/*.test.js"
+  "test": "jest --config=jest.config.js",
+  "test:watch": "jest --watch --config=jest.config.js"
 },
   "dependencies": {
     "@emotion/react": "^11.13.3",
